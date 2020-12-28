@@ -3,7 +3,7 @@ ARG nomad_version=1.0.0
 ARG cni_version=0.9.0
 WORKDIR /
 RUN apt-get update && \
-apt-get -y install curl unzip iptables && \
+apt-get -y install curl unzip iptables iproute2 && \
         curl -o nomad.zip https://releases.hashicorp.com/nomad/${nomad_version}/nomad_${nomad_version}_linux_amd64.zip && \
         unzip nomad.zip && \
         rm nomad.zip && \
