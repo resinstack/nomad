@@ -15,4 +15,5 @@ apt-get -y install curl unzip iptables && \
         apt-get -y autoremove && \
         rm -rf /var/cache/apt
 
+LABEL org.opencontainers.image.source https://github.com/resinstack/nomad
 ENTRYPOINT ["/nomad"]
