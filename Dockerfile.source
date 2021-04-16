@@ -1,0 +1,30 @@
+FROM golang:1-buster AS build
+ARG nomad_version=1.0.4
+ARG nomad_prs=
+ARG nomad_origin=https://github.com/hashicorp/nomad
+WORKDIR /build
+RUN apt-get update && apt-get -y install build-essential curl git
+RUN git clone -b v${nomad_version} ${nomad_origin} . && \
+        git config --global user.email "build@localhost" && \
+        git config --global user.name "Nomad Build" && \
+for p in ${nomad_prs} ; do curl -L ${nomad_origin}/pull/$p.patch | git am - ; done && \
+        echo "Doing build..." && \
+        go build -o /nomad .
+
+
+FROM debian:buster-slim
+ARG cni_version=0.9.0
+WORKDIR /
+COPY --from=build /nomad /nomad
+RUN apt-get update && \
+        apt-get -y install curl unzip iptables iproute2 && \
+        curl -L -o cni-plugins.tgz https://github.com/containernetworking/plugins/releases/download/v${cni_version}/cni-plugins-linux-amd64-v${cni_version}.tgz && \
+        mkdir -p /usr/libexec/cni && \
+        tar -xvzf cni-plugins.tgz -C /usr/libexec/cni && \
+        rm cni-plugins.tgz && \
+        apt-get -y remove curl unzip  && \
+        apt-get -y autoremove && \
+        rm -rf /var/cache/apt
+
+LABEL org.opencontainers.image.source https://github.com/resinstack/nomad
+ENTRYPOINT ["/nomad"]

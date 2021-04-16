@@ -1,0 +1,40 @@
+---
+name: PR Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      nomadPRs:
+        description: 'Space separated list of PRs to patch in'
+        required: true
+      nomadVersion:
+        description: 'Base version to build on top of'
+        required: true
+      dockerTag:
+        description: 'Image tag'
+        required: true
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to GCHR
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.CR_PAT }}
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: "ghcr.io/${{ github.repository }}:${{ github.event.inputs.dockerTag }}"
+          file: Dockerfile.source
+          build-args: |
+            nomad_prs=${{github.event.inputs.nomadPRs}}
+            nomad_version=${{github.event.inputs.nomadVersion}}
