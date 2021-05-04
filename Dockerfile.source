@@ -9,7 +9,7 @@ RUN git clone -b v${nomad_version} ${nomad_origin} . && \
         git config --global user.name "Nomad Build" && \
 for p in ${nomad_prs} ; do curl -L ${nomad_origin}/pull/$p.patch | git am - ; done && \
         echo "Doing build..." && \
-        go build -o /nomad .
+        go build -o /nomad -tags ui .
 
 
 FROM debian:buster-slim
