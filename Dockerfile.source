@@ -15,7 +15,7 @@ for p in ${nomad_prs} ; do curl -L ${nomad_origin}/pull/$p.patch | git am - ; do
 FROM debian:buster-slim
 ARG cni_version=0.9.0
 WORKDIR /
-COPY --from=build /nomad /nomad
+COPY --from=build /nomad /usr/local/bin/nomad
 RUN apt-get update && \
         apt-get -y install curl unzip iptables iproute2 && \
         curl -L -o cni-plugins.tgz https://github.com/containernetworking/plugins/releases/download/v${cni_version}/cni-plugins-linux-amd64-v${cni_version}.tgz && \
@@ -27,4 +27,4 @@ RUN apt-get update && \
         rm -rf /var/cache/apt
 
 LABEL org.opencontainers.image.source https://github.com/resinstack/nomad
-ENTRYPOINT ["/nomad"]
+ENTRYPOINT ["/usr/local/bin/nomad"]
