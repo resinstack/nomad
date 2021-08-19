@@ -1,5 +1,5 @@
 FROM debian:buster-slim
-ARG nomad_version=1.1.2
+ARG nomad_version=1.1.3
 ARG cni_version=0.9.0
 WORKDIR /
 RUN apt-get update && \
