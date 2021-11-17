@@ -1,5 +1,5 @@
 FROM golang:1-buster AS build
-ARG nomad_version=1.2.0-beta1
+ARG nomad_version=1.2.0
 ARG nomad_prs=
 ARG nomad_origin=https://github.com/hashicorp/nomad
 WORKDIR /build
