@@ -26,8 +26,8 @@ jobs:
         uses: docker/login-action@v1
         with:
           registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.CR_PAT }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and push
         id: docker_build
         uses: docker/build-push-action@v2
@@ -38,3 +38,5 @@ jobs:
           build-args: |
             nomad_prs=${{github.event.inputs.nomadPRs}}
             nomad_version=${{github.event.inputs.nomadVersion}}
+          labels: |
+            org.opencontainers.image.source=https://github.com/resinstack/nomad
