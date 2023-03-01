@@ -1,6 +1,6 @@
 FROM debian:buster-slim
-ARG nomad_version=1.4.2
-ARG cni_version=1.0.1
+ARG nomad_version=1.5.0-rc.1
+ARG cni_version=1.2.0
 WORKDIR /
 RUN apt-get update && \
 apt-get -y install curl unzip iptables iproute2 && \
