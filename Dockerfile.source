@@ -1,5 +1,5 @@
-FROM golang:1-buster AS build
-ARG nomad_version=1.5.5
+FROM golang:1.21-bookworm AS build
+ARG nomad_version=1.6.3
 ARG nomad_prs=
 ARG nomad_origin=https://github.com/hashicorp/nomad
 WORKDIR /build
@@ -13,8 +13,8 @@ for p in ${nomad_prs} ; do curl -L ${nomad_origin}/pull/$p.patch | git am - ; do
     go build -o /nomad -tags ui .
 
 
-FROM debian:buster-slim
-ARG cni_version=1.2.0
+FROM debian:bookworm-slim
+ARG cni_version=1.3.0
 WORKDIR /
 COPY --from=build /nomad /usr/local/bin/nomad
 RUN apt-get update && \
